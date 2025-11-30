@@ -40,11 +40,15 @@ echo.
 rem ----------------------------------------------------------------------------
 rem  Prompt for the step to perform.
 rem ----------------------------------------------------------------------------
+:Prompt
 set /p step= "Enter the step to perform (F = First time, A = ADD changes and commit, Q = Quit):  "
 rem echo You entered:  %step%
 if /I "%step%"=="f" goto First_Time
 if /I "%step%"=="a" goto Add_And_Commit
 if /I "%step%"=="q" goto Done
+echo You must enter F, A or Q.
+pause
+goto Prompt
 
 :First_Time
 rem ----------------------------------------------------------------------------
@@ -78,7 +82,7 @@ echo.
 
 set filePath=README.md
 if exist %filePath% (
-    del %filePath%
+     del %filePath%
     echo %filePath% file deleted.
 )
 echo %project_name%>> %filePath%
@@ -109,10 +113,11 @@ rem      Example:  Added Part 1 - Spaceship Controls and Part 2 - Bullets.
 rem  - Add and commit the changes
 rem  - Push to the remote repository
 rem ----------------------------------------------------------------------------
-set /p commit_message= "Enter commit message for the ADD (Q to Quit):  "
-echo You entered:  %commit_message%
-if "%commit_message%"=="q" goto Done
-if "%commit_message%"=="Q" goto Done
+set "defaultValue=Initial project upload."
+set /p "commit_message=Enter commit message (Enter = <%defaultValue%>, Q = Quit):  "
+if not defined commit_message ( set "commit_message=%defaultValue%" )
+echo You entered: %commit_message%
+if /I "%commit_message%"=="q" goto Done
 
 @echo on
 git pull origin master
@@ -122,7 +127,7 @@ git push -u origin master
 @echo off
 
 echo.
-echo - Changed files committed and pushed to remote repository successfully.
+echo - Changed files successfully committed and pushed to remote repository .
 echo.
 
 :Done
